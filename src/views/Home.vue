@@ -47,11 +47,11 @@
 								<v-text-field v-model="abil" label="기능개발" outlined></v-text-field>
 								<v-text-field v-model="api" label="API현황" outlined></v-text-field>
 								<v-text-field v-model="content" label="제공기능" outlined></v-text-field>
-								<v-text-field v-model="액션" label="액션" outlined></v-text-field>
 							</v-col>
+
 							<v-col cols="12">
 								<div class="text-center">
-									<v-pagination v-model="page" :length="pageCount" circle @click="page_Lookup()"></v-pagination>
+									<v-pagination v-model="page" :length="pageCount" circle v-on:input="page_Lookup"></v-pagination>
 								</div>
 							</v-col>
 						</v-row>
@@ -60,6 +60,7 @@
 
 				<v-card-actions>
 					<v-spacer></v-spacer>
+					<v-btn color="error" @click="log">log</v-btn>
 					<v-btn color="error" @click="dialog = false">취소</v-btn>
 					<v-btn color="primary" @click="create_plan">생성</v-btn>
 				</v-card-actions>
@@ -68,15 +69,25 @@
 	</div>
 </template>
 <script>
+// import Vue from 'vue'
 export default {
 	components: {},
 
 	data() {
 		return {
+			test: [{ type: '', depth: '' }],
 			page: 1,
 			pageCount: 1,
 			dialog: false,
 			search: '',
+			content: '',
+			api: '',
+			abil: '',
+			publ: '',
+			gui: '',
+			depth: '',
+			type: '',
+			dataPerPage: 7,
 			headers: [
 				{ text: '구분', align: 'start', value: 'type' },
 				{ text: '뎁스', align: 'start', value: 'depth' },
@@ -89,16 +100,118 @@ export default {
 			],
 		}
 	},
+	watch: {
+		// 질문이 변경될 때 마다 이 기능이 실행됩니다.
+		type: function() {
+			this.test[this.page - 1].type = this.type
+			console.log('type:' + this.test[this.page - 1].type)
+			console.log(this.test[this.page - 1])
+			console.log(this.test)
+		},
+		depth: function() {
+			this.test[this.page - 1].depth = this.depth
+		},
+	},
 	methods: {
+		log() {
+			console.log(this.page)
+		},
+		save() {
+			this.test.push({
+				type: this.type,
+				depth: this.depth,
+				gui: this.gui,
+				publ: this.publ,
+				abil: this.abil,
+				api: this.api,
+				content: this.content,
+			})
+		},
 		plus() {
 			this.pageCount = this.pageCount += 1
-			console.log(this.page)
+			this.page = this.pageCount
+			this.test.push({
+				type: this.type,
+				depth: this.depth,
+				gui: this.gui,
+				publ: this.publ,
+				abil: this.abil,
+				api: this.api,
+				content: this.content,
+			})
+			// Vue.set(this.test.type, this.page - 1, this.type)
+			this.type = ''
+			this.depth = ''
+			this.gui = ''
+			this.publ = ''
+			this.abil = ''
+			this.api = ''
+			this.content = ''
+			console.log(this.test)
 		},
 		page_Lookup() {
-			console.log(this.page)
+			console.log(this.test[this.page - 1])
+			// this.type = this.test[this.page - 1].type
+			// this.depth = this.test[this.page - 1].depth
+			// this.gui = this.test[this.page - 1].gui
+			// this.publ = this.test[this.page - 1].publ
+			// this.abil = this.test[this.page - 1].abil
+			// this.api = this.test[this.page - 1].api
+			// this.content = this.test[this.page - 1].content
+
+			// this.test[this.page - 1].splice({
+			// 	type: this.type,
+			// 	depth: this.depth,
+			// 	gui: this.gui,
+			// 	publ: this.publ,
+			// 	abil: this.abil,
+			// 	api: this.api,
+			// 	content: this.content,
+			// })
+
+			// console.log(this.test[this.page - 1])
+
+			if (this.test[this.page - 1]) {
+				this.type = this.test[this.page - 1].type
+				this.depth = this.test[this.page - 1].depth
+				this.gui = this.test[this.page - 1].gui
+				this.publ = this.test[this.page - 1].publ
+				this.abil = this.test[this.page - 1].abil
+				this.api = this.test[this.page - 1].api
+				this.content = this.test[this.page - 1].content
+			} else {
+				this.type = ''
+				this.depth = ''
+				this.gui = ''
+				this.publ = ''
+				this.abil = ''
+				this.api = ''
+				this.content = ''
+			}
 		},
+
 		create_plan() {
+			// this.$store.state.comments.push({
+			// 	type: this.type,
+			// 	depth: this.depth,
+			// 	gui: this.gui,
+			// 	publ: this.publ,
+			// 	abil: this.abil,
+			// 	api: this.api,
+			// 	content: this.content,
+			// })
 			console.log(this.page, this.type, this.depth, this.gui, this.publ, this.abil, this.api, this.content)
+
+			this.type = ''
+			this.depth = ''
+			this.gui = ''
+			this.publ = ''
+			this.abil = ''
+			this.api = ''
+			this.content = ''
+			// this.$store.state.comments.type = this.type
+			// this.$store.state.comments.depth = this.depth
+			console.log(this.$store.state.comments)
 		},
 	},
 }
